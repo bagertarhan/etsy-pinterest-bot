@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Yetkilendirme Tamamlandı</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 600px; margin: 60px auto; line-height: 1.6; padding: 0 20px; }
+  .box { background: #f4f4f4; border-radius: 8px; padding: 20px; word-break: break-all; font-family: monospace; font-size: 15px; margin: 20px 0; }
+  .label { font-weight: bold; color: #555; }
+  button { padding: 8px 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Yetkilendirme Tamamlandı ✅</h1>
+<p>Aşağıdaki <b>code</b> değerini kopyalayıp GitHub Actions kurulum adımında (2. adım) ilgili alana yapıştırın.</p>
+
+<div class="label">code:</div>
+<div class="box" id="code">-</div>
+<button onclick="copyCode()">Kopyala</button>
+
+<p style="margin-top:30px; color:#888; font-size:14px;">
+Bu sayfa herhangi bir veriyi sunucuya göndermez, sadece adres çubuğundaki bilgiyi ekranda gösterir.
+</p>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code') || '(code bulunamadı, URL\'yi kontrol edin)';
+  document.getElementById('code').textContent = code;
+
+  function copyCode() {
+    navigator.clipboard.writeText(code);
+    alert('Kopyalandı!');
+  }
+</script>
+</body>
+</html>
