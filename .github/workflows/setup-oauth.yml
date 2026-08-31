@@ -39,15 +39,15 @@ jobs:
       - name: Start adimini calistir
         if: ${{ inputs.step == 'start' }}
         env:
-          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
-          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          ETSY_KEYSTRING: ${{ vars.ETSY_KEYSTRING }}
+          PINTEREST_APP_ID: ${{ vars.PINTEREST_APP_ID }}
         run: python src/oauth_setup.py start
 
       - name: Finish adimini calistir
         if: ${{ inputs.step == 'finish' }}
         env:
-          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
-          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          ETSY_KEYSTRING: ${{ vars.ETSY_KEYSTRING }}
+          PINTEREST_APP_ID: ${{ vars.PINTEREST_APP_ID }}
           PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
         run: |
           python src/oauth_setup.py finish \
