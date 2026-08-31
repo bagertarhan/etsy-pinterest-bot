@@ -1,0 +1,44 @@
+name: Daily Etsy to Pinterest Pinning
+
+on:
+  schedule:
+    # Her gun saat 09:00 UTC (Turkiye saatiyle yaz saati 12:00, kis saati 12:00 -
+    # not: UTC+3 sabit oldugu icin Turkiye saatiyle her zaman 12:00 civari)
+    - cron: "0 9 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo'yu indir
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Bagimliliklari kur
+        run: pip install -r requirements.txt
+
+      - name: Pinleme scriptini calistir
+        env:
+          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
+          ETSY_REFRESH_TOKEN: ${{ secrets.ETSY_REFRESH_TOKEN }}
+          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
+          PINTEREST_REFRESH_TOKEN: ${{ secrets.PINTEREST_REFRESH_TOKEN }}
+          PINTEREST_BOARD_NAME: ${{ vars.PINTEREST_BOARD_NAME }}
+        run: python src/main.py
+
+      - name: Pinlenen urunler listesini kaydet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/posted.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update posted listings [skip ci]"
+          git push
