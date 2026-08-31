@@ -1,0 +1,56 @@
+name: OAuth Setup (tek seferlik kurulum)
+
+on:
+  workflow_dispatch:
+    inputs:
+      step:
+        description: "Adim: 'start' (linkleri uretir) veya 'finish' (token alir)"
+        required: true
+        default: "start"
+        type: choice
+        options:
+          - start
+          - finish
+      etsy_code:
+        description: "(finish adiminda, Etsy icin) Etsy'den alinan 'code' degeri - Pinterest hazir degilse bos birakilabilir"
+        required: false
+      pinterest_code:
+        description: "(finish adiminda, Pinterest icin) Pinterest'ten alinan 'code' degeri - Etsy hazir degilse bos birakilabilir"
+        required: false
+      code_verifier:
+        description: "(finish adiminda) start adiminda verilen CODE_VERIFIER degeri (Etsy icin gerekli)"
+        required: false
+
+jobs:
+  oauth:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo'yu indir
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Bagimliliklari kur
+        run: pip install -r requirements.txt
+
+      - name: Start adimini calistir
+        if: ${{ inputs.step == 'start' }}
+        env:
+          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
+          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+        run: python src/oauth_setup.py start
+
+      - name: Finish adimini calistir
+        if: ${{ inputs.step == 'finish' }}
+        env:
+          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
+          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
+        run: |
+          python src/oauth_setup.py finish \
+            --etsy-code "${{ inputs.etsy_code }}" \
+            --pinterest-code "${{ inputs.pinterest_code }}" \
+            --code-verifier "${{ inputs.code_verifier }}"
