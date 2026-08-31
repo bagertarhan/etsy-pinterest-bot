@@ -27,9 +27,9 @@ jobs:
 
       - name: Pinleme scriptini calistir
         env:
-          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
+          ETSY_KEYSTRING: ${{ vars.ETSY_KEYSTRING }}
           ETSY_REFRESH_TOKEN: ${{ secrets.ETSY_REFRESH_TOKEN }}
-          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          PINTEREST_APP_ID: ${{ vars.PINTEREST_APP_ID }}
           PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
           PINTEREST_REFRESH_TOKEN: ${{ secrets.PINTEREST_REFRESH_TOKEN }}
           PINTEREST_BOARD_NAME: ${{ vars.PINTEREST_BOARD_NAME }}
