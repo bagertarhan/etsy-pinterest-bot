@@ -67,37 +67,51 @@ def do_start():
 
 
 def do_finish(etsy_code: str, pinterest_code: str, code_verifier: str):
-    etsy_client_id = get_env("ETSY_KEYSTRING")
-    pinterest_client_id = get_env("PINTEREST_APP_ID")
-    pinterest_client_secret = get_env("PINTEREST_APP_SECRET")
+    """
+    Etsy ve Pinterest kodlarindan istedigi olani isler. Ikisi ayni anda hazir
+    olmak zorunda degil -- sadece biri girilirse sadece o servis icin token alinir.
+    """
+    did_something = False
 
-    print("Etsy token degisimi yapiliyor...")
-    etsy_tokens = etsy_client.exchange_code_for_tokens(
-        client_id=etsy_client_id,
-        redirect_uri=REDIRECT_URI,
-        code=etsy_code,
-        code_verifier=code_verifier,
-    )
+    if etsy_code:
+        etsy_client_id = get_env("ETSY_KEYSTRING")
+        print("Etsy token degisimi yapiliyor...")
+        etsy_tokens = etsy_client.exchange_code_for_tokens(
+            client_id=etsy_client_id,
+            redirect_uri=REDIRECT_URI,
+            code=etsy_code,
+            code_verifier=code_verifier,
+        )
+        print("=" * 70)
+        print("ETSY BASARILI! Asagidaki degeri GitHub Secrets kismina ekleyin:")
+        print("Secret adi: ETSY_REFRESH_TOKEN")
+        print("Deger:", etsy_tokens["refresh_token"])
+        print("=" * 70)
+        did_something = True
+    else:
+        print("Etsy kodu girilmedi, Etsy adimi atlandi.")
 
-    print("Pinterest token degisimi yapiliyor...")
-    pinterest_tokens = pinterest_client.exchange_code_for_tokens(
-        client_id=pinterest_client_id,
-        client_secret=pinterest_client_secret,
-        redirect_uri=REDIRECT_URI,
-        code=pinterest_code,
-    )
+    if pinterest_code:
+        pinterest_client_id = get_env("PINTEREST_APP_ID")
+        pinterest_client_secret = get_env("PINTEREST_APP_SECRET")
+        print("Pinterest token degisimi yapiliyor...")
+        pinterest_tokens = pinterest_client.exchange_code_for_tokens(
+            client_id=pinterest_client_id,
+            client_secret=pinterest_client_secret,
+            redirect_uri=REDIRECT_URI,
+            code=pinterest_code,
+        )
+        print("=" * 70)
+        print("PINTEREST BASARILI! Asagidaki degeri GitHub Secrets kismina ekleyin:")
+        print("Secret adi: PINTEREST_REFRESH_TOKEN")
+        print("Deger:", pinterest_tokens["refresh_token"])
+        print("=" * 70)
+        did_something = True
+    else:
+        print("Pinterest kodu girilmedi, Pinterest adimi atlandi.")
 
-    print("=" * 70)
-    print("BASARILI! Asagidaki iki degeri GitHub Secrets kismina ekleyin:")
-    print("=" * 70)
-    print()
-    print("Secret adi: ETSY_REFRESH_TOKEN")
-    print("Deger:", etsy_tokens["refresh_token"])
-    print()
-    print("Secret adi: PINTEREST_REFRESH_TOKEN")
-    print("Deger:", pinterest_tokens["refresh_token"])
-    print()
-    print("=" * 70)
+    if not did_something:
+        print("Hic kod girilmedi, yapilacak bir sey yok.")
 
 
 if __name__ == "__main__":
@@ -107,9 +121,9 @@ if __name__ == "__main__":
     sub.add_parser("start")
 
     finish_parser = sub.add_parser("finish")
-    finish_parser.add_argument("--etsy-code", required=True)
-    finish_parser.add_argument("--pinterest-code", required=True)
-    finish_parser.add_argument("--code-verifier", required=True)
+    finish_parser.add_argument("--etsy-code", required=False, default="")
+    finish_parser.add_argument("--pinterest-code", required=False, default="")
+    finish_parser.add_argument("--code-verifier", required=False, default="")
 
     args = parser.parse_args()
 
