@@ -96,12 +96,17 @@ def get_active_listings(api_key: str, shared_secret: str, access_token: str, sho
     resp.raise_for_status()
     return resp.json().get("results", [])
 
+def get_listing_images(api_key: str, shared_secret: str, access_token: str, listing_id) -> list:
+    """Bir urunun tum gorsellerini ayri endpoint uzerinden ceker."""
+    url = f"{ETSY_API_BASE}/listings/{listing_id}/images"
+    resp = requests.get(url, headers=_headers(api_key, shared_secret, access_token), timeout=30)
+    resp.raise_for_status()
+    return resp.json().get("results", [])
 
-def get_image_urls(listing: dict) -> list:
-    """Bir listing objesindeki tum gorsellerin en yuksek kaliteli URL'lerini sirayla dondurur."""
-    images = listing.get("images") or []
+def get_image_urls(images: list) -> list:
+    """Bir gorsel listesindeki en yuksek kaliteli URL'leri sirayla dondurur."""
     urls = []
-    for img in images:
+    for img in images or []:
         url = img.get("url_fullxfull") or img.get("url_570xN")
         if url:
             urls.append(url)
