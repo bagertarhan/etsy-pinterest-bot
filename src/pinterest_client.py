@@ -91,7 +91,9 @@ def create_pin(access_token: str, board_id: str, image_bytes: bytes, title: str,
             "data": image_b64,
         },
     }
-    url = f"{PINTEREST_API_BASE}/pins"
+        url = f"{PINTEREST_API_BASE}/pins"
     resp = requests.post(url, headers=_headers(access_token), json=payload, timeout=60)
+    if not resp.ok:
+        print("PINTEREST HATA DETAYI:", resp.status_code, resp.text)
     resp.raise_for_status()
     return resp.json()
