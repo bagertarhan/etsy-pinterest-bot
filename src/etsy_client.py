@@ -28,7 +28,7 @@ def generate_pkce_pair():
     return code_verifier, code_challenge
 
 
-def build_auth_url(client_id: str, redirect_uri: str, code_challenge: str, state: str) -> str:
+ build_auth_url(client_id: str, redirect_uri: str, code_challenge: str, state: str) -> str:
     params = {
         "response_type": "code",
         "client_id": client_id,
@@ -42,7 +42,7 @@ def build_auth_url(client_id: str, redirect_uri: str, code_challenge: str, state
     return f"{ETSY_AUTH_URL}?{query}"
 
 
-def exchange_code_for_tokens(client_id: str, redirect_uri: str, code: str, code_verifier: str) -> dict:
+ exchange_code_for_tokens(client_id: str, redirect_uri: str, code: str, code_verifier: str) -> dict:
     data = {
         "grant_type": "authorization_code",
         "client_id": client_id,
@@ -55,7 +55,7 @@ def exchange_code_for_tokens(client_id: str, redirect_uri: str, code: str, code_
     return resp.json()
 
 
-def refresh_access_token(client_id: str, refresh_token: str) -> dict:
+ refresh_access_token(client_id: str, refresh_token: str) -> dict:
     data = {
         "grant_type": "refresh_token",
         "client_id": client_id,
@@ -66,14 +66,14 @@ def refresh_access_token(client_id: str, refresh_token: str) -> dict:
     return resp.json()
 
 
-def _headers(api_key: str, access_token: str) -> dict:
+ _headers(api_key: str, access_token: str) -> dict:
     return {
         "x-api-key": api_key,
         "Authorization": f"Bearer {access_token}",
     }
 
 
-def get_user_id_from_access_token(access_token: str) -> str:
+ get_user_id_from_access_token(access_token: str) -> str:
     """Etsy access token'lari 'USERID.rastgelekisim' formatindadir."""
     return access_token.split(".")[0]
 
@@ -82,6 +82,8 @@ def get_shop_id(api_key: str, access_token: str) -> int:
     user_id = get_user_id_from_access_token(access_token)
     url = f"{ETSY_API_BASE}/users/{user_id}/shops"
     resp = requests.get(url, headers=_headers(api_key, access_token), timeout=30)
+    if not resp.ok:
+        print("ETSY HATA DETAYI:", resp.status_code, resp.text)
     resp.raise_for_status()
     shop = resp.json()
     return shop["shop_id"]
