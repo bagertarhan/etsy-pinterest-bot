@@ -54,3 +54,10 @@ jobs:
             --etsy-code "${{ inputs.etsy_code }}" \
             --pinterest-code "${{ inputs.pinterest_code }}" \
             --code-verifier "${{ inputs.code_verifier }}"
+      - name: Token dosyasini yukle
+        if: ${{ inputs.step == 'finish' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tokens
+          path: tokens_output.txt
+          retention-days: 1
