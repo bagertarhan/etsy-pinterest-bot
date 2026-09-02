@@ -17,7 +17,7 @@ ETSY_TOKEN_URL = "https://api.etsy.com/v3/public/oauth/token"
 ETSY_AUTH_URL = "https://www.etsy.com/oauth/connect"
 ETSY_API_BASE = "https://api.etsy.com/v3/application"
 
-SCOPES = "listings_r"
+SCOPES = "shops_r listings_r"
 
 
 def generate_pkce_pair():
