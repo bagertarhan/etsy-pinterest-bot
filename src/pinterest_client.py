@@ -13,7 +13,7 @@ PINTEREST_AUTH_URL = "https://www.pinterest.com/oauth/"
 PINTEREST_TOKEN_URL = "https://api.pinterest.com/v5/oauth/token"
 PINTEREST_API_BASE = "https://api.pinterest.com/v5"
 
-SCOPES = "boards:read,pins:read,pins:write"
+SCOPES = "boards:read,boards:write,pins:read,pins:write"
 
 
 def build_auth_url(client_id: str, redirect_uri: str, state: str) -> str:
