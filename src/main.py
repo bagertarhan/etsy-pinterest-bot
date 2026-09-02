@@ -65,14 +65,12 @@ def get_env(name: str) -> str:
     return value
 
 
-def pick_image_url(listing: dict, photo_index_map: dict) -> tuple:
+def pick_image_url(image_urls: list, listing_id: str, photo_index_map: dict) -> tuple:
     """
     Bu urun icin kullanilacak gorsel URL'sini ve kullanilan foto index'ini dondurur.
     Bir onceki turde kullanilan fotografin BIR SONRAKISINI secer; fotograflar
     biterse basa (0) doner.
     """
-    listing_id = str(listing["listing_id"])
-    image_urls = etsy_client.get_image_urls(listing)
     if not image_urls:
         return None, None
 
@@ -144,12 +142,14 @@ def main():
     print(f"Bugun pinlenecek urun sayisi: {count}")
 
     # --- Her urun icin pin olustur ---
-    for listing in chosen:
+        for listing in chosen:
         listing_id = str(listing["listing_id"])
         title = listing.get("title", "")
         listing_url = etsy_client.get_listing_url(listing)
 
-        image_url, used_index = pick_image_url(listing, photo_index_map)
+        images = etsy_client.get_listing_images(etsy_client_id, etsy_shared_secret, etsy_access_token, listing_id)
+        image_urls = etsy_client.get_image_urls(images)
+        image_url, used_index = pick_image_url(image_urls, listing_id, photo_index_map)
 
         if not image_url:
             print(f"[Atlandi] {listing_id} - gorsel bulunamadi")
