@@ -8,7 +8,7 @@ Kullanim (workflow icinden):
       -> Etsy ve Pinterest yetkilendirme linklerini ve code_verifier degerini yazdirir
 
   python src/oauth_setup.py finish --etsy-code XXX --pinterest-code YYY --code-verifier ZZZ
-      -> Kodlari refresh token'lara cevirir ve ekrana yazdirir
+      -> Kodlari refresh token'lara cevirir ve tokens_output.txt dosyasina yazar
 """
 
 import argparse
@@ -70,6 +70,7 @@ def do_finish(etsy_code: str, pinterest_code: str, code_verifier: str):
     """
     Etsy ve Pinterest kodlarindan istedigi olani isler. Ikisi ayni anda hazir
     olmak zorunda degil -- sadece biri girilirse sadece o servis icin token alinir.
+    Sonuclar 'tokens_output.txt' dosyasina yazilir (log maskeleme sorunundan kacinmak icin).
     """
     did_something = False
 
@@ -82,11 +83,9 @@ def do_finish(etsy_code: str, pinterest_code: str, code_verifier: str):
             code=etsy_code,
             code_verifier=code_verifier,
         )
-        print("=" * 70)
-        print("ETSY BASARILI! Asagidaki degeri GitHub Secrets kismina ekleyin:")
-        print("Secret adi: ETSY_REFRESH_TOKEN")
-        print("Deger:", etsy_tokens["refresh_token"])
-        print("=" * 70)
+        print("ETSY BASARILI! Deger dosyaya yazildi (tokens_output.txt), asagida indirin.")
+        with open("tokens_output.txt", "a", encoding="utf-8") as f:
+            f.write("ETSY_REFRESH_TOKEN=" + etsy_tokens["refresh_token"] + "\n")
         did_something = True
     else:
         print("Etsy kodu girilmedi, Etsy adimi atlandi.")
@@ -101,11 +100,9 @@ def do_finish(etsy_code: str, pinterest_code: str, code_verifier: str):
             redirect_uri=REDIRECT_URI,
             code=pinterest_code,
         )
-        print("=" * 70)
-        print("PINTEREST BASARILI! Asagidaki degeri GitHub Secrets kismina ekleyin:")
-        print("Secret adi: PINTEREST_REFRESH_TOKEN")
-        print("Deger:", pinterest_tokens["refresh_token"])
-        print("=" * 70)
+        print("PINTEREST BASARILI! Deger dosyaya yazildi (tokens_output.txt), asagida indirin.")
+        with open("tokens_output.txt", "a", encoding="utf-8") as f:
+            f.write("PINTEREST_REFRESH_TOKEN=" + pinterest_tokens["refresh_token"] + "\n")
         did_something = True
     else:
         print("Pinterest kodu girilmedi, Pinterest adimi atlandi.")
