@@ -6,7 +6,6 @@ Etsy API v3 ile konusan basit bir istemci.
 - Magaza ID bulma
 - Aktif urun listelerini (listings) cekme
 """
-
 import base64
 import hashlib
 import os
@@ -28,7 +27,7 @@ def generate_pkce_pair():
     return code_verifier, code_challenge
 
 
- build_auth_url(client_id: str, redirect_uri: str, code_challenge: str, state: str) -> str:
+def build_auth_url(client_id: str, redirect_uri: str, code_challenge: str, state: str) -> str:
     params = {
         "response_type": "code",
         "client_id": client_id,
@@ -42,7 +41,7 @@ def generate_pkce_pair():
     return f"{ETSY_AUTH_URL}?{query}"
 
 
- exchange_code_for_tokens(client_id: str, redirect_uri: str, code: str, code_verifier: str) -> dict:
+def exchange_code_for_tokens(client_id: str, redirect_uri: str, code: str, code_verifier: str) -> dict:
     data = {
         "grant_type": "authorization_code",
         "client_id": client_id,
@@ -55,7 +54,7 @@ def generate_pkce_pair():
     return resp.json()
 
 
- refresh_access_token(client_id: str, refresh_token: str) -> dict:
+def refresh_access_token(client_id: str, refresh_token: str) -> dict:
     data = {
         "grant_type": "refresh_token",
         "client_id": client_id,
@@ -66,14 +65,14 @@ def generate_pkce_pair():
     return resp.json()
 
 
- _headers(api_key: str, access_token: str) -> dict:
+def _headers(api_key: str, access_token: str) -> dict:
     return {
         "x-api-key": api_key,
         "Authorization": f"Bearer {access_token}",
     }
 
 
- get_user_id_from_access_token(access_token: str) -> str:
+def get_user_id_from_access_token(access_token: str) -> str:
     """Etsy access token'lari 'USERID.rastgelekisim' formatindadir."""
     return access_token.split(".")[0]
 
