@@ -105,9 +105,7 @@ def main():
 
     listings = etsy_client.get_active_listings(etsy_client_id, etsy_shared_secret, etsy_access_token, shop_id)
     print(f"Toplam aktif urun: {len(listings)}")
-    if listings:
-        print("DEBUG - ilk urunun anahtarlari:", list(listings[0].keys()))
-        print("DEBUG - ilk urunun images alani:", listings[0].get("images"))
+
     if not listings:
         print("Aktif urun bulunamadi, islem sonlandiriliyor.")
         return
@@ -142,7 +140,7 @@ def main():
     print(f"Bugun pinlenecek urun sayisi: {count}")
 
     # --- Her urun icin pin olustur ---
-        for listing in chosen:
+    for listing in chosen:
         listing_id = str(listing["listing_id"])
         title = listing.get("title", "")
         listing_url = etsy_client.get_listing_url(listing)
