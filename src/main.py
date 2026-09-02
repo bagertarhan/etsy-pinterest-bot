@@ -107,7 +107,9 @@ def main():
 
     listings = etsy_client.get_active_listings(etsy_client_id, etsy_shared_secret, etsy_access_token, shop_id)
     print(f"Toplam aktif urun: {len(listings)}")
-
+    if listings:
+        print("DEBUG - ilk urunun anahtarlari:", list(listings[0].keys()))
+        print("DEBUG - ilk urunun images alani:", listings[0].get("images"))
     if not listings:
         print("Aktif urun bulunamadi, islem sonlandiriliyor.")
         return
