@@ -89,6 +89,7 @@ def build_description(base_description: str) -> str:
 def main():
     # --- Ortam degiskenlerini oku ---
     etsy_client_id = get_env("ETSY_KEYSTRING")
+    etsy_shared_secret = get_env("ETSY_SHARED_SECRET")
     etsy_refresh_token = get_env("ETSY_REFRESH_TOKEN")
 
     pinterest_client_id = get_env("PINTEREST_APP_ID")
@@ -101,10 +102,10 @@ def main():
     etsy_tokens = etsy_client.refresh_access_token(etsy_client_id, etsy_refresh_token)
     etsy_access_token = etsy_tokens["access_token"]
 
-    shop_id = etsy_client.get_shop_id(etsy_client_id, etsy_access_token)
+    shop_id = etsy_client.get_shop_id(etsy_client_id, etsy_shared_secret, etsy_access_token)
     print(f"Magaza ID: {shop_id}")
 
-    listings = etsy_client.get_active_listings(etsy_client_id, etsy_access_token, shop_id)
+    listings = etsy_client.get_active_listings(etsy_client_id, etsy_shared_secret, etsy_access_token, shop_id)
     print(f"Toplam aktif urun: {len(listings)}")
 
     if not listings:
