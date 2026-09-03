@@ -1,0 +1,25 @@
+name: Sandbox Test Pin (video icin)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo'yu indir
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Bagimliliklari kur
+        run: pip install requests
+
+      - name: Sandbox test pini olustur
+        env:
+          PINTEREST_SANDBOX_TOKEN: ${{ secrets.PINTEREST_SANDBOX_TOKEN }}
+          PINTEREST_BOARD_NAME: ${{ vars.PINTEREST_BOARD_NAME }}
+        run: python src/test_sandbox_pin.py
