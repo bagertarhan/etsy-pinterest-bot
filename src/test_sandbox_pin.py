@@ -1,14 +1,5 @@
-bash
-
-cat /home/claude/project/src/test_sandbox_pin.py
-Output
-
 """
 SADECE VIDEO/DEMO icin: Pinterest Sandbox ortaminda tek bir test pini olusturur.
-Bu script, gercek gunluk sistemin bir parcasi degildir, sadece Pinterest'e
-gonderilecek demo videosu icin kullanilir.
-
-Kullanim: PINTEREST_SANDBOX_TOKEN ve PINTEREST_BOARD_NAME ortam degiskenleriyle calisir.
 """
 
 import base64
@@ -31,7 +22,6 @@ def main():
 
     headers = {"Authorization": f"Bearer {token}"}
 
-    # Panoyu bul
     print("Panolar aliniyor...")
     resp = requests.get(f"{SANDBOX_API_BASE}/boards", headers=headers, params={"page_size": 100})
     print("Board listesi durumu:", resp.status_code)
@@ -48,12 +38,10 @@ def main():
 
     if not board_id:
         print(f"'{board_name}' panosu Sandbox'ta bulunamadi, mevcut panolar: {[b.get('name') for b in boards]}")
-        print("Sandbox panolari production'dan AYRIDIR. Once Sandbox'ta bir pano olusturmus olmaniz gerekebilir.")
         return
 
     print(f"Pano bulundu: {board_id}")
 
-    # Basit bir test gorseli indirip pin olustur
     test_image_url = "https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?w=800"
     print("Test gorseli indiriliyor...")
     img_resp = requests.get(test_image_url, timeout=30)
@@ -80,7 +68,6 @@ def main():
 
     result = pin_resp.json()
     print("BASARILI! Pin ID:", result.get("id"))
-    print("Pin verisi:", result)
 
 
 if __name__ == "__main__":
