@@ -60,7 +60,9 @@ def main():
     etsy_headers = {"x-api-key": etsy_client_id, "Authorization": f"Bearer {etsy_access_token}"}
 
     print("Magaza bilgisi aliniyor...")
-    shop_resp = requests.get(f"{ETSY_API_BASE}/users/{user_id}/shops", headers=etsy_headers)
+        shop_resp = requests.get(f"{ETSY_API_BASE}/users/{user_id}/shops", headers=etsy_headers)
+    if not shop_resp.ok:
+        print("ETSY HATA DETAYI:", shop_resp.status_code, shop_resp.text)
     shop_resp.raise_for_status()
     shop_id = shop_resp.json()["shop_id"]
     print(f"Magaza ID: {shop_id}")
