@@ -83,14 +83,24 @@ def main():
         raise RuntimeError("Magazada aktif urun bulunamadi.")
 
     listing = results[0]
+    listing_id = listing["listing_id"]
     title = listing.get("title", "")
     listing_url = listing.get("url", "")
-    images = listing.get("images") or []
+
+    print(f"Secilen urun: {title}")
+
+    print("Urun gorselleri ayri endpoint uzerinden cekiliyor...")
+    images_resp = requests.get(
+        f"{ETSY_API_BASE}/listings/{listing_id}/images",
+        headers=etsy_headers,
+    )
+    images_resp.raise_for_status()
+    images = images_resp.json().get("results", [])
+
     image_url = None
     if images:
         image_url = images[0].get("url_fullxfull") or images[0].get("url_570xN")
 
-    print(f"Secilen urun: {title}")
     print(f"Urun gorseli: {image_url}")
 
     if not image_url:
