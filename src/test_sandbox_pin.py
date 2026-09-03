@@ -37,8 +37,18 @@ def main():
             break
 
     if not board_id:
-        print(f"'{board_name}' panosu Sandbox'ta bulunamadi, mevcut panolar: {[b.get('name') for b in boards]}")
-        return
+        print(f"'{board_name}' panosu Sandbox'ta yok, otomatik olusturuluyor...")
+        create_resp = requests.post(
+            f"{SANDBOX_API_BASE}/boards",
+            headers=headers,
+            json={"name": board_name, "description": "Sandbox test panosu"},
+        )
+        print("Pano olusturma durumu:", create_resp.status_code)
+        if not create_resp.ok:
+            print("HATA:", create_resp.text)
+            create_resp.raise_for_status()
+        board_id = create_resp.json()["id"]
+        print(f"Yeni pano olusturuldu: {board_id}")
 
     print(f"Pano bulundu: {board_id}")
 
