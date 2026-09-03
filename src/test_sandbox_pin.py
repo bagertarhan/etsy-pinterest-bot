@@ -45,6 +45,7 @@ def crop_to_2_3(image_bytes: bytes) -> bytes:
 
 def main():
     etsy_client_id = get_env("ETSY_KEYSTRING")
+    etsy_shared_secret = get_env("ETSY_SHARED_SECRET")
     etsy_refresh_token = get_env("ETSY_REFRESH_TOKEN")
 
     print("Etsy erisim token'i yenileniyor...")
@@ -57,7 +58,10 @@ def main():
     etsy_access_token = token_resp.json()["access_token"]
     user_id = etsy_access_token.split(".")[0]
 
-    etsy_headers = {"x-api-key": etsy_client_id, "Authorization": f"Bearer {etsy_access_token}"}
+    etsy_headers = {
+        "x-api-key": f"{etsy_client_id}:{etsy_shared_secret}",
+        "Authorization": f"Bearer {etsy_access_token}",
+    }
 
     print("Magaza bilgisi aliniyor...")
     shop_resp = requests.get(f"{ETSY_API_BASE}/users/{user_id}/shops", headers=etsy_headers)
